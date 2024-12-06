@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div
+      class="container vh-100 d-flex flex-row justify-content-center align-items-center"
+    >
+      <h1 class="text-center mb-4">Weather App</h1>
+      <div class="input-group mb-3 justify-content-center">
+        <input
+          type="text"
+          id="locationInput"
+          class="form-control"
+          placeholder="Enter city or zip code"
+        />
+        <button class="btn btn-primary" id="searchBtn">Search</button>
+      </div>
+      <div id="currentWeather" class="row mb-4 justify-content-center w-100">
+        <div class="col-md-6 d-flex align-items-center">
+          <div class="text-center me-3">
+            <h2 id="cityName">City Name</h2>
+            <img id="weatherIcon" src="" alt="" />
+            <h3 id="temperature">0°F</h3>
+            <p id="weatherDescription">Description</p>
+          </div>
+        </div>
+      </div>
+      <h2 class="text-center mb-3">5-Day Forecast</h2>
+      <div id="forecast" class="row w-100"></div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>

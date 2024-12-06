@@ -1,0 +1,26 @@
+body {
+  background: #253248;
+  color: white;
+}
+
+.card {
+  border-radius: 15px;
+}
+
+.card-body img {
+  width: 50px;
+}
+
+/* Centering styles */
+#currentWeather {
+  display: flex;
+}
+
+/* Responsive adjustments for forecast */
+.forecast-card {
+  margin-bottom: 15px; /* Add some spacing between cards */
+}
+
+#temperature {
+  margin-left: 10px;
+}
