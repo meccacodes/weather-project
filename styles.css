@@ -18,8 +18,15 @@ h1 {
   align-items: center;
 }
 
+#locationInput {
+  font-size: 20px;
+  padding: 5px;
+}
+
 #searchBtn {
   margin-left: 10px;
+  font-size: 20px;
+  padding: 5px;
 }
 
 .card {
