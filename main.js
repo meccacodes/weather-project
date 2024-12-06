@@ -4,7 +4,6 @@ const forecastDiv = document.getElementById("forecast");
 const searchBtn = document.getElementById("searchBtn");
 const locationInput = document.getElementById("locationInput");
 
-// Function to fetch weather data
 async function fetchWeatherData(lat, lon) {
   try {
     const response = await fetch(
@@ -20,40 +19,37 @@ async function fetchWeatherData(lat, lon) {
   }
 }
 
-// Function to get approximate location based on IP address
 async function getApproximateLocation() {
   const response = await fetch("http://ip-api.com/json");
   const data = await response.json();
   return { lat: data.lat, lon: data.lon };
 }
 
-// Function to display current weather
 function displayCurrentWeather(data) {
   const { temp, weather } = data.current;
 
-  document.getElementById("cityName").innerText = data.timezone; // Set city name
-  document.getElementById("temperature").innerText = `${temp.toFixed(1)}°F`; // Set temperature in Fahrenheit
+  document.getElementById("cityName").innerText = data.timezone;
+  document.getElementById("temperature").innerText = `${temp.toFixed(1)}°F`;
   document.getElementById("weatherDescription").innerText =
-    weather[0].description; // Set description
+    weather[0].description;
   document.getElementById(
     "weatherIcon"
-  ).src = `http://openweathermap.org/img/wn/${weather[0].icon}.png`; // Set icon
+  ).src = `http://openweathermap.org/img/wn/${weather[0].icon}.png`;
 }
 
-// Function to display 5-day forecast
 function displayForecast(daily) {
   forecastDiv.innerHTML = "";
   daily.slice(1, 6).forEach((day) => {
-    const date = new Date(day.dt * 1000).toLocaleDateString();
+    const date = new Date(day.dt * 1000);
+    const options = { weekday: "long" };
+    const dayName = date.toLocaleDateString("en-US", options);
     const { temp, weather } = day;
     forecastDiv.innerHTML += `
-          <div class="col-md-2 forecast-card">
+          <div class="col forecast-card">
               <div class="card">
                   <div class="card-body text-center">
-                      <h6>${date}</h6>
-                      <p>${temp.day.toFixed(
-                        1
-                      )}°F</p> <!-- Display daily temperature in Fahrenheit -->
+                      <h3>${dayName}</h3>
+                      <p>${temp.day.toFixed(1)}°F</p>
                       <p>${weather[0].description}</p>
                       <img src="http://openweathermap.org/img/wn/${
                         weather[0].icon
@@ -64,7 +60,6 @@ function displayForecast(daily) {
   });
 }
 
-// Event listener for search button
 searchBtn.addEventListener("click", async () => {
   const location = locationInput.value;
   const geoResponse = await fetch(
@@ -84,7 +79,6 @@ searchBtn.addEventListener("click", async () => {
   }
 });
 
-// Initialize with approximate location from IP
 getApproximateLocation().then(async (location) => {
   const weatherData = await fetchWeatherData(location.lat, location.lon);
   if (weatherData) {

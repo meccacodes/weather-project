@@ -1,6 +1,25 @@
 body {
   background: #253248;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#searchBtn {
+  margin-left: 10px;
 }
 
 .card {
@@ -11,16 +30,33 @@ body {
   width: 50px;
 }
 
-/* Centering styles */
 #currentWeather {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
-/* Responsive adjustments for forecast */
+#cityWeather {
+  border: 1px white solid;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .forecast-card {
-  margin-bottom: 15px; /* Add some spacing between cards */
+  margin: 15px;
 }
 
 #temperature {
   margin-left: 10px;
+}
+
+#forecast {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
