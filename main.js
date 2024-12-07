@@ -22,7 +22,13 @@ async function fetchWeatherData(lat, lon) {
 async function getApproximateLocation() {
   const response = await fetch("http://ip-api.com/json");
   const data = await response.json();
-  return { lat: data.lat, lon: data.lon, name: data.city };
+  return {
+    lat: data.lat,
+    lon: data.lon,
+    name: `${data.city}, ${data.regionName}, ${data.country}`,
+    zip: data.zip,
+    timezone: data.timezone,
+  };
 }
 
 function displayCurrentWeather(data, cityName) {
@@ -79,29 +85,11 @@ function isValidZipCode(zip) {
   return false;
 }
 
-function isValidZipCode(zip) {
-  if (zip.length === 5) {
-    return zip.split("").every((char) => char >= "0" && char <= "9");
-  } else if (zip.length === 10) {
-    return (
-      zip[5] === "-" &&
-      zip
-        .slice(0, 5)
-        .split("")
-        .every((char) => char >= "0" && char <= "9") &&
-      zip
-        .slice(6)
-        .split("")
-        .every((char) => char >= "0" && char <= "9")
-    );
-  }
-  return false;
-}
+async function handleWeatherSearch() {
+  const location = locationInput.value.trim();
+  if (!location) return;
 
-searchBtn.addEventListener("click", async () => {
-  const location = locationInput.value;
   let geoUrl;
-
   if (isValidZipCode(location)) {
     geoUrl = `https://api.openweathermap.org/geo/1.0/zip?zip=${location}&appid=${apiKey}`;
   } else {
@@ -129,6 +117,15 @@ searchBtn.addEventListener("click", async () => {
   } catch (error) {
     console.error("Error:", error);
     alert(error.message);
+  }
+}
+
+searchBtn.addEventListener("click", handleWeatherSearch);
+
+locationInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    handleWeatherSearch();
   }
 });
 
