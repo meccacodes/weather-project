@@ -22,13 +22,13 @@ async function fetchWeatherData(lat, lon) {
 async function getApproximateLocation() {
   const response = await fetch("http://ip-api.com/json");
   const data = await response.json();
-  return { lat: data.lat, lon: data.lon };
+  return { lat: data.lat, lon: data.lon, name: data.city };
 }
 
-function displayCurrentWeather(data) {
+function displayCurrentWeather(data, cityName) {
   const { temp, weather } = data.current;
 
-  document.getElementById("cityName").innerText = data.timezone;
+  document.getElementById("cityName").innerText = cityName;
   document.getElementById("temperature").innerText = `${temp.toFixed(1)}°F`;
   document.getElementById("weatherDescription").innerText =
     weather[0].description;
@@ -60,29 +60,82 @@ function displayForecast(daily) {
   });
 }
 
+function isValidZipCode(zip) {
+  if (zip.length === 5) {
+    return zip.split("").every((char) => char >= "0" && char <= "9");
+  } else if (zip.length === 10) {
+    return (
+      zip[5] === "-" &&
+      zip
+        .slice(0, 5)
+        .split("")
+        .every((char) => char >= "0" && char <= "9") &&
+      zip
+        .slice(6)
+        .split("")
+        .every((char) => char >= "0" && char <= "9")
+    );
+  }
+  return false;
+}
+
+function isValidZipCode(zip) {
+  if (zip.length === 5) {
+    return zip.split("").every((char) => char >= "0" && char <= "9");
+  } else if (zip.length === 10) {
+    return (
+      zip[5] === "-" &&
+      zip
+        .slice(0, 5)
+        .split("")
+        .every((char) => char >= "0" && char <= "9") &&
+      zip
+        .slice(6)
+        .split("")
+        .every((char) => char >= "0" && char <= "9")
+    );
+  }
+  return false;
+}
+
 searchBtn.addEventListener("click", async () => {
   const location = locationInput.value;
-  const geoResponse = await fetch(
-    `https://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${apiKey}`
-  );
-  const geoData = await geoResponse.json();
+  let geoUrl;
 
-  if (geoData.length > 0) {
-    const { lat, lon } = geoData[0];
+  if (isValidZipCode(location)) {
+    geoUrl = `https://api.openweathermap.org/geo/1.0/zip?zip=${location}&appid=${apiKey}`;
+  } else {
+    geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=${apiKey}`;
+  }
+
+  try {
+    const geoResponse = await fetch(geoUrl);
+    const geoData = await geoResponse.json();
+
+    let lat, lon, name;
+    if (Array.isArray(geoData) && geoData.length > 0) {
+      ({ lat, lon, name } = geoData[0]);
+    } else if (geoData.lat && geoData.lon) {
+      ({ lat, lon, name } = geoData);
+    } else {
+      throw new Error("Location not found");
+    }
+
     const weatherData = await fetchWeatherData(lat, lon);
     if (weatherData) {
-      displayCurrentWeather(weatherData);
+      displayCurrentWeather(weatherData, name);
       displayForecast(weatherData.daily);
     }
-  } else {
-    alert("Location not found.");
+  } catch (error) {
+    console.error("Error:", error);
+    alert(error.message);
   }
 });
 
 getApproximateLocation().then(async (location) => {
   const weatherData = await fetchWeatherData(location.lat, location.lon);
   if (weatherData) {
-    displayCurrentWeather(weatherData);
+    displayCurrentWeather(weatherData, location.name);
     displayForecast(weatherData.daily);
   }
 });
